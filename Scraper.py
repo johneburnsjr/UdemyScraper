@@ -25,7 +25,6 @@ for link in links:
     newurls = url + str(count)
     print(newurls)
     for site in soup.find_all('a',class_="coupon-code-link btn promotion"):
-        if userSearch != '':
+        
             print(site.get('href'))
-        else:
-            print(site.get('href'))      
+            
