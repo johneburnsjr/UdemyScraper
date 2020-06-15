@@ -2,29 +2,41 @@ from bs4 import BeautifulSoup
 import urllib.request
 from IPython.display import HTML
 import re
+def my_function(x):
+  return list(dict.fromkeys(x))
 
-userSearch = input("Type something to test this out: ")
-searchUrl = "https://udemycoupon.learnviral.com/?s="
+userSearch = input("Type something to test this out: ")#get user's imput
+searchUrl = "https://udemycoupon.learnviral.com/?s=" #default search url
 
-if userSearch != '':
-    r = urllib.request.urlopen(searchUrl + userSearch).read()
-else:    
-    r = urllib.request.urlopen('https://udemycoupon.learnviral.com/coupon-category/free100-discount/').read()
-# multiple clicks r = urllib.request.urlopen('https://www.discudemy.com/category/certification').read()
-# multiple clicks r = urllib.request.urlopen('https://udemycoupons.me/').read()
+pages = soup.find('div', class_='pages') #find page divs
+links = pages.find_all('a', class_='page-numbers') #find page numbers in page div
 
-
-soup = BeautifulSoup(r, "lxml")
-pages = soup.find('div', class_='pages')
-url = "https://udemycoupon.learnviral.com/coupon-category/free100-discount/page/"
-links = pages.find_all('a', class_='page-numbers')
+if userSearch != '': #logic to find url based if input is added
+    url = 'https://udemycoupon.learnviral.com/page/'
+else: 
+    url = "https://udemycoupon.learnviral.com/coupon-category/free100-discount/page/"
+     
 
 count = 1
-for link in links:
+for i in range(5):
     count = count + 1
-    newurls = url + str(count)
-    print(newurls)
+    if userSearch != '': #if user enters string then creates custom URL to scrape
+        newurls = url + str(count)+"/?s="+userSearch
+    else:
+        newurls = url + str(count)
+    
+    if userSearch != '' and re.search('[1-9,a-z,A-Z]',userSearch):
+        r = urllib.request.urlopen(newurls).read()
+    elif userSearch == '':    
+        r = urllib.request.urlopen(newurls).read()
+    else:
+        print("Invalid Input")
+    # multiple clicks r = urllib.request.urlopen('https://www.discudemy.com/category/certification').read()
+    # multiple clicks r = urllib.request.urlopen('https://udemycoupons.me/').read()
+
+    
+    soup = BeautifulSoup(r, "lxml") #scrape data
+    
     for site in soup.find_all('a',class_="coupon-code-link btn promotion"):
-        
+         #find coupon code tag and print
             print(site.get('href'))
-            
